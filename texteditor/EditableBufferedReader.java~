@@ -96,7 +96,6 @@ public class EditableBufferedReader extends BufferedReader {
         try {
             setRaw();
             Line line = new Line();
-            Console console = new Console();
             int key = this.read();
             while (key != '\r') {
 
@@ -105,7 +104,7 @@ public class EditableBufferedReader extends BufferedReader {
                     case LEFT:
 
                         if (line.getPuntero() > 0) {
-                            console.left();
+                            System.out.print("\033[D");
                             line.setPuntero(line.getPuntero() - 1);
                         }
                         break;
@@ -113,23 +112,36 @@ public class EditableBufferedReader extends BufferedReader {
                     case RIGHT:
 
                         if (line.getPuntero() < line.getSize()) {
-                            console.right();
+                            System.out.print("\033[C");
                             line.setPuntero(line.getPuntero() + 1);
                         }
                         break;
 
                     case HOME:
-                        console.home(line.getPuntero());
-                        line.setPuntero(0);
+
+                        while (line.getPuntero() > 0) {
+                            System.out.print("\033[C");
+                            line.setPuntero(line.getPuntero() - 1);
+                        }
                         break;
 
                     case END:
-                        console.end(line.getSize()-line.getPuntero());
-                        line.setPuntero(line.getSize());
+
+                        while (line.getPuntero() < line.getSize()) {
+                            System.out.print("\033[C");
+                            line.setPuntero(line.getPuntero() + 1);
+                        }
                         break;
 
                     case DEL:
-                        console.del(line.getPuntero(), line.toString());
+
+
+                        String corte = line.toString().substring(line.getPuntero() + 1);
+                        System.out.print(corte);
+                        System.out.print(" ");
+                        for (int i = 0; i <= corte.length(); i++) {
+                            System.out.print("\033[D");
+                        }
                         line.delChar();
                         break;
 
@@ -138,10 +150,16 @@ public class EditableBufferedReader extends BufferedReader {
                         break;
 
                     case BACKSPACE:
+                        System.out.print("\033[D");
+                        int pos = 0;
                         if(line.getPuntero()< line.getSize()){
-                            console.backspaceinMiddle(line.getPuntero(),line.getSize(),line.toString());
-                        }else{
-                            console.backspace();
+                            String corte2 = line.toString().substring(line.getPuntero());
+                            System.out.print(corte2);
+                            pos = corte2.length();
+                        }
+                        System.out.print(" ");
+                        for(int i =0 ; i<= pos; i++){
+                            System.out.print("\033[D");
                         }
                         line.removeChar();
                         break;
@@ -158,11 +176,22 @@ public class EditableBufferedReader extends BufferedReader {
                             }
                             line.addChar(line.getPuntero(),key);
                             line.setPuntero(line.getPuntero()+1);
-                            console.addCharOverWrite(key);
+                            System.out.print((char)key);
                          }else{                                      //InsertMode
                             line.addChar(line.getPuntero(),key);
                             line.setPuntero(line.getPuntero()+1);
-                            console.addCharInsert(line.getPuntero(), line.getSize(), key, line.toString());
+                            int pos1= 0;
+                            if(line.getPuntero() < line.getSize()){
+                                String str = line.toString().substring(line.getPuntero());
+                                System.out.print((char)key + str);
+                                pos1 = str.length();
+                            }else{
+                                System.out.print((char)key);
+                            }
+                            for(int i =0 ; i< pos1; i++){
+                                System.out.print("\033[D");
+                            }
+
                         }
 
                 }
