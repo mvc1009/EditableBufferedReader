@@ -1,0 +1,43 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+package texteditor;
+
+/**
+ *
+ * @author mvc1009
+ */
+ 
+public class Console {
+    private String str;
+    
+    public Console(){
+        buffer = new ArrayList<String>();
+        numChar = 0;                            //pruebas
+        puntero = 0;
+    }
+    
+    public void addChar(char caract){
+        String str = "" + caract;
+        buffer.add(puntero, str);
+        puntero ++;
+        numChar ++;
+    }
+    public void home(){
+    }
+    public void end(){
+    }
+    public void del(){
+    }
+    public void backspace(){
+    }
+    public void left(){
+    }
+    public void right(){
+    }
+    public void backspace(){
+    }
+}
