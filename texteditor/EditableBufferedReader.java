@@ -16,7 +16,6 @@ import java.util.logging.Logger;
 public class EditableBufferedReader extends BufferedReader {
 
     static final char ESC = '\033';
-    
     static final int LEFT = 200;
     static final int RIGHT = 201;
     static final int HOME = 203;
@@ -156,13 +155,15 @@ public class EditableBufferedReader extends BufferedReader {
                                 line.delChar();
                                 line.setPuntero(line.getPuntero()+1);
                             }
-                            line.addChar(line.getPuntero(),key);
-                            line.setPuntero(line.getPuntero()+1);
                             console.addCharOverWrite(key);
-                         }else{                                      //InsertMode
                             line.addChar(line.getPuntero(),key);
                             line.setPuntero(line.getPuntero()+1);
+                           
+                         }else{                                      //InsertMode
                             console.addCharInsert(line.getPuntero(), line.getSize(), key, line.toString());
+                            line.addChar(line.getPuntero(),key);
+                            line.setPuntero(line.getPuntero()+1);
+                            
                         }
 
                 }
