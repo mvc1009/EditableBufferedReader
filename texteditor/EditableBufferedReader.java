@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package texteditor;
 
 import java.io.BufferedReader;
@@ -15,8 +10,9 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author lsadusr12
+ * @author mvc1009
  */
+
 public class EditableBufferedReader extends BufferedReader {
 
     static final char ESC = '\033';
@@ -47,14 +43,14 @@ public class EditableBufferedReader extends BufferedReader {
 
     @Override
     /*
-    *Read es una funció que llegeix caracter a caracter, on s'ha de tenir en compte
-    *els simbols següents:
-    *F. Dreta:       ESC [ C
-    *F. Esquerra:    ESC [ D
-    *Inici Linea:    ESC [ H o ESC O H, ESC [ 1 -
-    *Final Linea:    ESC [ F o ESC O F, ESC [ 4 -
-    *Insertar:       ESC [ 2 -
-    *SEL:            ESC [ 3 -
+    *   Read es una funció que llegeix caracter a caracter, on s'ha de tenir en compte
+    *   els simbols següents:
+    *   F. Dreta:       ESC [ C
+    *   F. Esquerra:    ESC [ D
+    *   Inici Linea:    ESC [ H o ESC O H, ESC [ 1 -
+    *   Final Linea:    ESC [ F o ESC O F, ESC [ 4 -
+    *   Insertar:       ESC [ 2 -
+    *   DEL:            ESC [ 3 -
     *
      */
     public int read() throws IOException {
@@ -76,20 +72,22 @@ public class EditableBufferedReader extends BufferedReader {
                     return RIGHT;
                 case 'D':
                     return LEFT;
+                case 'A':
                 case 'B':
-                    return BACKSPACE;
+                    return USELESS;
                 case '2':
+                    if((car = super.read()) == '~') return INS;
+                    else   return '2';
                 case '3':
-                    car = super.read();
-                    if (car == '2' && (car = super.read()) == '~') {
-                        return INS;
-                    } else {
-                        return DEL;
-                    }
+                    if((car = super.read()) == '~') return DEL;
+                    else    return '3';
 
                 default:
                     return car;
             }
+        }
+        else if(car == 127){
+            return BACKSPACE;
         }
         return car;
     }
@@ -97,10 +95,9 @@ public class EditableBufferedReader extends BufferedReader {
     public String readLine() throws IOException {
         try {
             setRaw();
-            String str = "";
             Line line = new Line();
-            int key;
-            while ((key = this.read()) != '\n') {
+            int key = this.read();
+            while (key != '\r') {
 
                 switch (key) {
 
@@ -138,7 +135,6 @@ public class EditableBufferedReader extends BufferedReader {
 
                     case DEL:
 
-                        line.removeChar();
 
                         String corte = line.toString().substring(line.getPuntero() + 1);
                         System.out.print(corte);
@@ -146,19 +142,25 @@ public class EditableBufferedReader extends BufferedReader {
                         for (int i = 0; i <= corte.length(); i++) {
                             System.out.print("\033[D");
                         }
-
+                        line.delChar();
                         break;
 
                     case INS:
                         line.changeMode();
-                        line.toString();
                         break;
 
                     case BACKSPACE:
                         System.out.print("\033[D");
+                        int pos = 0;
+                        if(line.getPuntero()< line.getSize()){
+                            String corte2 = line.toString().substring(line.getPuntero());
+                            System.out.print(corte2);
+                            pos = corte2.length();
+                        }
                         System.out.print(" ");
-                        System.out.print("\033[D");
-
+                        for(int i =0 ; i<= pos; i++){
+                            System.out.print("\033[D");
+                        }
                         line.removeChar();
                         break;
 
@@ -166,14 +168,34 @@ public class EditableBufferedReader extends BufferedReader {
                         break;
 
                     default:
-                        if(line.getMode()){
-                            
-                        }else{
-                            
+
+                        if(!line.getMode()){                         //OverwriteMode
+                            if(line.getPuntero() < line.getSize()){
+                                line.delChar();
+                                line.setPuntero(line.getPuntero()+1);
+                            }
+                            line.addChar(line.getPuntero(),key);
+                            line.setPuntero(line.getPuntero()+1);
+                            System.out.print((char)key);
+                         }else{                                      //InsertMode
+                            line.addChar(line.getPuntero(),key);
+                            line.setPuntero(line.getPuntero()+1);
+                            int pos1= 0;
+                            if(line.getPuntero() < line.getSize()){
+                                String str = line.toString().substring(line.getPuntero());
+                                System.out.print((char)key + str);
+                                pos1 = str.length();
+                            }else{
+                                System.out.print((char)key);
+                            }
+                            for(int i =0 ; i< pos1; i++){
+                                System.out.print("\033[D");
+                            }
+
                         }
 
                 }
-
+            key = this.read();
             }
 
             unsetRaw();
