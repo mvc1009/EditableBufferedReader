@@ -20,19 +20,26 @@ public class Line {
     public Line() {
         buffer = new ArrayList<Character>();                       //pruebas
         puntero = 0;
-        insertMode = false;
+        insertMode = true;
     }
 
     public void addChar(int puntero, int caract) {
         buffer.add(puntero, (char) caract);
-        puntero++;
+
     }
 
     public void removeChar() {
-        buffer.remove(puntero);
-        puntero--;
+        if(buffer.size() > 0){
+            buffer.remove(puntero-1);
+            puntero --;
+        }
     }
-
+    public void delChar(){
+        if(puntero < buffer.size()){
+            buffer.remove(puntero);
+            puntero--;
+        }
+    }
     public int getPuntero() {
         return puntero;
     }
