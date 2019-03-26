@@ -15,18 +15,18 @@ import java.util.logging.Logger;
 
 public class EditableBufferedReader extends BufferedReader {
 
-    static final char ESC = '\033';
+    private static final char ESC = '\033';
     
-    static final int LEFT = 200;
-    static final int RIGHT = 201;
-    static final int HOME = 203;
-    static final int END = 204;
-    static final int DEL = 205;
-    static final int INS = 206;
+    private static final int LEFT = 200;
+    private static final int RIGHT = 201;
+    private static final int HOME = 203;
+    private static final int END = 204;
+    private static final int DEL = 205;
+    private static final int INS = 206;
 
-    static final int USELESS = 202;
-    static final int BACKSPACE = 127;
-
+    private static final int USELESS = 202;
+    private static final int BACKSPACE = 127;
+    
     public EditableBufferedReader(Reader in) {
         super(in);
     }
@@ -116,18 +116,18 @@ public class EditableBufferedReader extends BufferedReader {
                         break;
 
                     case HOME:
-                        console.home(line.getPuntero());
+                        console.home();
                         line.setPuntero(0);
                         break;
 
                     case END:
-                        console.end(line.getSize()-line.getPuntero());
+                        console.end(line.getSize());
                         line.setPuntero(line.getSize());
                         break;
 
                     case DEL:
                         if(line.getPuntero()<line.getSize()){
-                            console.del(line.getPuntero(), line.toString());
+                            console.del();
                             line.delChar();
                         }
                         break;
@@ -137,12 +137,7 @@ public class EditableBufferedReader extends BufferedReader {
                         console.changeMode();
                         break;
 
-                    case BACKSPACE:
-                        if(line.getPuntero()< line.getSize()){
-                            console.backspaceinMiddle(line.getPuntero(),line.getSize(),line.toString());
-                        }else{
-                            console.backspace();
-                        }
+                    case BACKSPACE:                        console.backspace(line.getPuntero(),line.getSize(),line.toString());
                         line.removeChar();
                         break;
 
@@ -150,20 +145,14 @@ public class EditableBufferedReader extends BufferedReader {
                         break;
 
                     default:
-
-                        if(!line.getMode()){                         //OverwriteMode
-                            if(line.getPuntero() < line.getSize()){
-                                line.delChar();
-                                line.setPuntero(line.getPuntero()+1);
-                            }
+                        if(!line.getMode()&&(line.getPuntero()<line.getSize())){
+                            line.delChar();
                             line.addChar(line.getPuntero(),key);
-                            line.setPuntero(line.getPuntero()+1);
-                         }else{                                      //InsertMode
+                            console.addChar((char)key);
+                        }else{
                             line.addChar(line.getPuntero(),key);
-                            line.setPuntero(line.getPuntero()+1);
+                            console.addChar((char)key);
                         }
-                        console.addChar((char)key);
-
                 }
             key = this.read();
             }

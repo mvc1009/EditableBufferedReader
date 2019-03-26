@@ -15,21 +15,25 @@ public class Console {
     
     private static final String RIGHT = "\033[C";
     private static final String LEFT = "\033[D";
-    private static final String HOME = "\033[0;0f";
-    private static final String END = "\033[0;%df";
+    private static final String HOME = "\033[%d;0f";
+    private static final String END = "\033[%d;%df";
     private static final String INSERT_MODE = "\033[4h";
     private static final String OVERWRITE_MODE = "\033[4l";
     private static final String DEL = "\033[P";
     private static final String COPY_POS = "\033[s";
-    private static final String PASTE_POS = "\033[1u";
+    private static final String PASTE_POS = "\033[u";
+    private static final String WHERE_IS_MY_CURSOR = "\033[6n";
     
+    private int linea_inicial = 1;
     private boolean insertMode;
+    
     public Console(){
         insertMode = false;
         System.out.print(OVERWRITE_MODE);
+        
     }
     public void addChar(char caract){
-        System.out.print((char)caract);
+        System.out.print(caract);
     }
     public void changeMode(){
         insertMode = !insertMode;
@@ -39,38 +43,29 @@ public class Console {
             System.out.print(OVERWRITE_MODE);
         }
     }
-    public void home(int puntero){
-        for(int i = 0; i <= puntero; i++){
-            System.out.print("\033[C");
-        }
+    public void home(){
+        System.out.print(HOME);
     }
     public void end(int chars){
         System.out.print(String.format(END,chars));
     }
-    public void del(int puntero, String str){
+    public void del(){
         System.out.print(DEL);
     }
-    public void backspaceinMiddle(int puntero, int size, String str){
-        System.out.print("\033[D");
-        int num = 0;
-        String corte = str.substring(puntero);
+    public void backspace(int puntero, int size, String str){
+        System.out.print(LEFT);
+        System.out.print(COPY_POS);
         if(puntero < size){
-           System.out.print(corte);
-           System.out.print(" ");
-           for(int i=0; i<= corte.length();i++){
-                System.out.print("\033[D");
-           }
+            String corte = str.substring(puntero);
+            System.out.print(corte);
         }
-    }
-    public void backspace(){
-        System.out.print("\033[D");
         System.out.print(" ");
-        System.out.print("\033[D");
+        System.out.print(PASTE_POS);
     }
     public void left(){
-        System.out.print("\033[D");
+        System.out.print(LEFT);
     }
     public void right(){
-        System.out.print("\033[C");
+        System.out.print(RIGHT);
     }
 }

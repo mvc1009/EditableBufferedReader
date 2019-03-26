@@ -18,26 +18,25 @@ public class Line {
     private boolean insertMode;
 
     public Line() {
-        buffer = new ArrayList<Character>();                       //pruebas
+        buffer = new ArrayList<Character>();
         puntero = 0;
         insertMode = false;
     }
 
     public void addChar(int puntero, int caract) {
         buffer.add(puntero, (char) caract);
-
+        this.puntero = puntero +1;
     }
 
     public void removeChar() {
         if(buffer.size() > 0){
             buffer.remove(puntero-1);
-            puntero --;
+            this.puntero = puntero -1;
         }
     }
     public void delChar(){
         if(puntero < buffer.size()){
             buffer.remove(puntero);
-            puntero--;
         }
     }
     public int getPuntero() {
@@ -49,7 +48,6 @@ public class Line {
     }
 
     @Override
-    
     public String toString() {
         String str = "";
         for (int i = 0; i < buffer.size(); i++) {
