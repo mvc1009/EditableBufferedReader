@@ -86,9 +86,6 @@ public class EditableBufferedReader extends BufferedReader {
                     return car;
             }
         }
-        else if(car == 127){
-            return BACKSPACE;
-        }
         return car;
     }
 
@@ -129,12 +126,15 @@ public class EditableBufferedReader extends BufferedReader {
                         break;
 
                     case DEL:
-                        console.del(line.getPuntero(), line.toString());
-                        line.delChar();
+                        if(line.getPuntero()<line.getSize()){
+                            console.del(line.getPuntero(), line.toString());
+                            line.delChar();
+                        }
                         break;
 
                     case INS:
                         line.changeMode();
+                        console.changeMode();
                         break;
 
                     case BACKSPACE:
@@ -158,12 +158,11 @@ public class EditableBufferedReader extends BufferedReader {
                             }
                             line.addChar(line.getPuntero(),key);
                             line.setPuntero(line.getPuntero()+1);
-                            console.addCharOverWrite(key);
                          }else{                                      //InsertMode
                             line.addChar(line.getPuntero(),key);
                             line.setPuntero(line.getPuntero()+1);
-                            console.addCharInsert(line.getPuntero(), line.getSize(), key, line.toString());
                         }
+                        console.addChar((char)key);
 
                 }
             key = this.read();
