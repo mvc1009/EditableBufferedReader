@@ -23,6 +23,7 @@ public class Console {
     private static final String COPY_POS = "\033[s";
     private static final String PASTE_POS = "\033[u";
     private static final String WHERE_IS_MY_CURSOR = "\033[6n";
+    private static final String CLEAR_TO_FINAL = "\033[K";
     
     private int linea_inicial = 1;
     private boolean insertMode;
@@ -30,7 +31,6 @@ public class Console {
     public Console(){
         insertMode = false;
         System.out.print(OVERWRITE_MODE);
-        
     }
     public void addChar(char caract){
         System.out.print(caract);
@@ -55,11 +55,8 @@ public class Console {
     public void backspace(int puntero, int size, String str){
         System.out.print(LEFT);
         System.out.print(COPY_POS);
-        if(puntero < size){
-            String corte = str.substring(puntero);
-            System.out.print(corte);
-        }
-        System.out.print(" ");
+        System.out.print(CLEAR_TO_FINAL);
+        System.out.print(str.substring(puntero));
         System.out.print(PASTE_POS);
     }
     public void left(){

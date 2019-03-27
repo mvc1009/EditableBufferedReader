@@ -137,7 +137,8 @@ public class EditableBufferedReader extends BufferedReader {
                         console.changeMode();
                         break;
 
-                    case BACKSPACE:                        console.backspace(line.getPuntero(),line.getSize(),line.toString());
+                    case BACKSPACE:
+                        console.backspace(line.getPuntero(),line.getSize(),line.toString());
                         line.removeChar();
                         break;
 
