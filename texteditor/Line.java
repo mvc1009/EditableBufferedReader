@@ -5,13 +5,15 @@
  */
 package texteditor;
 
-import java.util.ArrayList;
+import java.io.*;
+import java.util.*;
 
 /**
  *
  * @author mario
  */
-public class Line {
+ 
+public class Line extends Observable {
 
     private ArrayList<Character> buffer;
     private int puntero;
@@ -24,19 +26,25 @@ public class Line {
     }
 
     public void addChar(int puntero, int caract) {
+        setChanged();
         buffer.add(puntero, (char) caract);
         this.puntero = puntero +1;
+        notifyObservers(new Console.Command(Console.Opcode.cADD, caract));
     }
 
     public void removeChar() {
+        setChanged();
         if(buffer.size() > 0){
-            buffer.remove(puntero-1);
-            this.puntero = puntero -1;
+        buffer.remove(puntero-1);
+        puntero = puntero -1;
+        notifyObservers(new Console.Command(Console.Opcode.cBACKSPACE, this.toString().substring(puntero)));
         }
     }
     public void delChar(){
+        setChanged();
         if(puntero < buffer.size()){
             buffer.remove(puntero);
+            notifyObservers(new Console.Command(Console.Opcode.cDEL));
         }
     }
     public int getPuntero() {
@@ -44,6 +52,16 @@ public class Line {
     }
 
     public void setPuntero(int position) {
+        setChanged();
+        if(position == 0){
+            notifyObservers(new Console.Command(Console.Opcode.cHOME, puntero,this.toString()));
+        }else if (position == buffer.size()){
+            notifyObservers(new Console.Command(Console.Opcode.cEND, puntero, this.toString()));
+        }else if (position == puntero+1){
+            notifyObservers(new Console.Command(Console.Opcode.cRIGHT));
+        }else if (position == puntero-1){
+            notifyObservers(new Console.Command(Console.Opcode.cLEFT));
+        }
         puntero = position;
     }
 
@@ -53,12 +71,13 @@ public class Line {
         for (int i = 0; i < buffer.size(); i++) {
             str = str + buffer.get(i);
         }
-
         return str;
     }
 
     public void changeMode() {
+        setChanged();
         insertMode = !insertMode;
+        notifyObservers(new Console.Command(Console.Opcode.cCHANGE));
     }
 
     public boolean getMode() {

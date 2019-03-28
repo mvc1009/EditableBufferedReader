@@ -90,10 +90,13 @@ public class EditableBufferedReader extends BufferedReader {
     }
 
     public String readLine() throws IOException {
+        Line line = null;
+        Console console = null;
         try {
             setRaw();
-            Line line = new Line();
-            Console console = new Console();
+            line = new Line();
+            console = new Console(line);
+            line.addObserver(console);
             int key = this.read();
             while (key != '\r') {
 
@@ -102,7 +105,6 @@ public class EditableBufferedReader extends BufferedReader {
                     case LEFT:
 
                         if (line.getPuntero() > 0) {
-                            console.left();
                             line.setPuntero(line.getPuntero() - 1);
                         }
                         break;
@@ -110,35 +112,30 @@ public class EditableBufferedReader extends BufferedReader {
                     case RIGHT:
 
                         if (line.getPuntero() < line.getSize()) {
-                            console.right();
                             line.setPuntero(line.getPuntero() + 1);
                         }
                         break;
 
                     case HOME:
-                        console.home();
                         line.setPuntero(0);
                         break;
 
                     case END:
-                        console.end(line.getSize());
                         line.setPuntero(line.getSize());
                         break;
 
                     case DEL:
                         if(line.getPuntero()<line.getSize()){
-                            console.del();
                             line.delChar();
                         }
                         break;
 
                     case INS:
                         line.changeMode();
-                        console.changeMode();
                         break;
 
                     case BACKSPACE:
-                        console.backspace(line.getPuntero(),line.getSize(),line.toString());
+                        //console.backspace(line.getPuntero(),line.getSize(),line.toString());
                         line.removeChar();
                         break;
 
@@ -148,12 +145,8 @@ public class EditableBufferedReader extends BufferedReader {
                     default:
                         if(!line.getMode()&&(line.getPuntero()<line.getSize())){
                             line.delChar();
-                            line.addChar(line.getPuntero(),key);
-                            console.addChar((char)key);
-                        }else{
-                            line.addChar(line.getPuntero(),key);
-                            console.addChar((char)key);
                         }
+                            line.addChar(line.getPuntero(),key);
                 }
             key = this.read();
             }

@@ -24,9 +24,6 @@ public class TextEditor {
             e.printStackTrace();
         }
         System.out.println("\nline is: " + str);
-        
-
-       
     }
 
 }
