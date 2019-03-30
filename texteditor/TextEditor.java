@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author lsadusr12
+ * @author mvc1009
  */
 public class TextEditor {
 
@@ -24,6 +24,9 @@ public class TextEditor {
             e.printStackTrace();
         }
         System.out.println("\nline is: " + str);
+
+
+
     }
 
 }
