@@ -10,9 +10,9 @@ import java.util.*;
 
 /**
  *
- * @author mario
+ * @author mvc1009
  */
- 
+
 public class Line extends Observable {
 
     private ArrayList<Character> buffer;

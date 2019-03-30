@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 public class EditableBufferedReader extends BufferedReader {
 
     private static final char ESC = '\033';
-    
+
     private static final int LEFT = 200;
     private static final int RIGHT = 201;
     private static final int HOME = 203;
@@ -26,7 +26,7 @@ public class EditableBufferedReader extends BufferedReader {
 
     private static final int USELESS = 202;
     private static final int BACKSPACE = 127;
-    
+
     public EditableBufferedReader(Reader in) {
         super(in);
     }
@@ -135,7 +135,6 @@ public class EditableBufferedReader extends BufferedReader {
                         break;
 
                     case BACKSPACE:
-                        //console.backspace(line.getPuntero(),line.getSize(),line.toString());
                         line.removeChar();
                         break;
 

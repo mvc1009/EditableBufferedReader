@@ -12,9 +12,9 @@ import java.util.*;
  *
  * @author mvc1009
  */
- 
+
 public class Console implements Observer{
-    
+
     private static final String RIGHT = "\033[C";
     private static final String LEFT = "\033[D";
     private static final String HOME = "\033[%sD";
@@ -28,9 +28,9 @@ public class Console implements Observer{
     private static final String CLEAR_TO_FINAL = "\033[K";
     private boolean insertMode;
     private Line line;
-    
+
     public static enum Opcode{ cADD, cCHANGE, cHOME,cEND,cDEL,cBACKSPACE,cRIGHT,cLEFT}
-    
+
     public class Command{
         Opcode code;
         String corteString;
