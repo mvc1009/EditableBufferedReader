@@ -11,8 +11,5 @@ Read is a function that reads character by character and detect the following ke
 *   Insert:                 ESC [ 2 -
 *   Delete:                 ESC [ 3 -
 *   Backspace:              127 (Not escape code but we need to take into account)
-<<<<<<< HEAD
 
-[Our code here!](https://github.com/mvc1009/EditableBufferedReader/tree/MVC/texteditor)
-=======
->>>>>>> 18c8e1bf47594d890fc70a7336d973c2dde7c253
+[Our code here!]((https://github.com/mvc1009/EditableBufferedReader/tree/MVC/texteditor)
