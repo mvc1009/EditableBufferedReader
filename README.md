@@ -12,4 +12,4 @@ Read is a function that reads character by character and detect the following ke
 *   Delete:                 ESC [ 3 -
 *   Backspace:              127 (Not escape code but we need to take into account)
 
-[Our code here!]((https://github.com/mvc1009/EditableBufferedReader/tree/MVC/texteditor)
+[Our code here!](https://github.com/mvc1009/EditableBufferedReader/tree/MVC/texteditor)
