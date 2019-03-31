@@ -15,17 +15,17 @@ import java.util.logging.Logger;
 
 public class EditableBufferedReader extends BufferedReader {
 
-    static final char ESC = '\033';
-    
-    static final int LEFT = 200;
-    static final int RIGHT = 201;
-    static final int HOME = 203;
-    static final int END = 204;
-    static final int DEL = 205;
-    static final int INS = 206;
+    private static final char ESC = '\033';
 
-    static final int USELESS = 202;
-    static final int BACKSPACE = 127;
+    private static final int LEFT = 200;
+    private static final int RIGHT = 201;
+    private static final int HOME = 203;
+    private static final int END = 204;
+    private static final int DEL = 205;
+    private static final int INS = 206;
+
+    private static final int USELESS = 202;
+    private static final int BACKSPACE = 127;
 
     public EditableBufferedReader(Reader in) {
         super(in);
@@ -86,17 +86,17 @@ public class EditableBufferedReader extends BufferedReader {
                     return car;
             }
         }
-        else if(car == 127){
-            return BACKSPACE;
-        }
         return car;
     }
 
     public String readLine() throws IOException {
+        Line line = null;
+        Console console = null;
         try {
             setRaw();
-            Line line = new Line();
-            Console console = new Console();
+            line = new Line();
+            console = new Console(line);
+            line.addObserver(console);
             int key = this.read();
             while (key != '\r') {
 
@@ -105,7 +105,6 @@ public class EditableBufferedReader extends BufferedReader {
                     case LEFT:
 
                         if (line.getPuntero() > 0) {
-                            console.left();
                             line.setPuntero(line.getPuntero() - 1);
                         }
                         break;
@@ -113,24 +112,22 @@ public class EditableBufferedReader extends BufferedReader {
                     case RIGHT:
 
                         if (line.getPuntero() < line.getSize()) {
-                            console.right();
                             line.setPuntero(line.getPuntero() + 1);
                         }
                         break;
 
                     case HOME:
-                        console.home(line.getPuntero());
                         line.setPuntero(0);
                         break;
 
                     case END:
-                        console.end(line.getSize()-line.getPuntero());
                         line.setPuntero(line.getSize());
                         break;
 
                     case DEL:
-                        console.del(line.getPuntero(), line.toString());
-                        line.delChar();
+                        if(line.getPuntero()<line.getSize()){
+                            line.delChar();
+                        }
                         break;
 
                     case INS:
@@ -138,11 +135,6 @@ public class EditableBufferedReader extends BufferedReader {
                         break;
 
                     case BACKSPACE:
-                        if(line.getPuntero()< line.getSize()){
-                            console.backspaceinMiddle(line.getPuntero(),line.getSize(),line.toString());
-                        }else{
-                            console.backspace();
-                        }
                         line.removeChar();
                         break;
 
@@ -150,21 +142,10 @@ public class EditableBufferedReader extends BufferedReader {
                         break;
 
                     default:
-
-                        if(!line.getMode()){                         //OverwriteMode
-                            if(line.getPuntero() < line.getSize()){
-                                line.delChar();
-                                line.setPuntero(line.getPuntero()+1);
-                            }
-                            line.addChar(line.getPuntero(),key);
-                            line.setPuntero(line.getPuntero()+1);
-                            console.addCharOverWrite(key);
-                         }else{                                      //InsertMode
-                            line.addChar(line.getPuntero(),key);
-                            line.setPuntero(line.getPuntero()+1);
-                            console.addCharInsert(line.getPuntero(), line.getSize(), key, line.toString());
+                        if(!line.getMode()){
+                            line.delChar();
                         }
-
+                            line.addChar(line.getPuntero(),key);
                 }
             key = this.read();
             }

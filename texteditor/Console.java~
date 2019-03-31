@@ -5,39 +5,71 @@
  */
 
 package texteditor;
+import java.io.*;
+import java.util.*;
 
 /**
  *
  * @author mvc1009
  */
  
-public class Console {
-    private String str;
+public class Console implements Observer{
     
-    public Console(){
-        buffer = new ArrayList<String>();
-        numChar = 0;                            //pruebas
-        puntero = 0;
-    }
+    private static final String RIGHT = "\033[C";
+    private static final String LEFT = "\033[D";
+    private static final String HOME = "\033[%dD";
+    private static final String END = "\033[%dC";
+    private static final String INSERT_MODE = "\033[4h";
+    private static final String OVERWRITE_MODE = "\033[4l";
+    private static final String DEL = "\033[P";
+    private static final String COPY_POS = "\033[s";
+    private static final String PASTE_POS = "\033[u";
+    private static final String WHERE_IS_MY_CURSOR = "\033[6n";
+    private static final String CLEAR_TO_FINAL = "\033[K";
+    private boolean insertMode;
+    private Line line;
     
-    public void addChar(char caract){
-        String str = "" + caract;
-        buffer.add(puntero, str);
-        puntero ++;
-        numChar ++;
+    public Console(Line line){
+        this.line = line;
+        insertMode = false;
+        System.out.print(OVERWRITE_MODE);
     }
-    public void home(){
-    }
-    public void end(){
-    }
-    public void del(){
-    }
-    public void backspace(){
-    }
-    public void left(){
-    }
-    public void right(){
-    }
-    public void backspace(){
+    public void update(Observable o, Object arg){
+        Command comand = (Command) arg;
+        switch(comand.code){
+            case cADD:
+                System.out.print(command.caract);
+                break;
+            case cCHANGE:
+                insertMode = !insertMode;
+                if(insertMode){
+                    System.out.print(INSERT_MODE);
+                }else{
+                    System.out.print(OVERWRITE_MODE);
+                }
+                break;
+            case cHOME:
+                System.out.print(HOME, command.caract);
+                break;
+            case cEND:
+                System.out.print(END, str.length()-caract);
+                break;
+            case cDEL:
+                System.out.print(DEL);
+                break;
+            case cBACKSPACE:
+                System.out.print(LEFT);
+                System.out.print(COPY_POS);
+                System.out.print(CLEAR_TO_FINAL);
+                System.out.print(command.corteString);
+                System.out.print(PASTE_POS);
+                break;
+            case cRIGHT:
+                System.out.print(RIGHT);
+                break;
+            case cLEFT:
+                System.out.print(LEFT);
+                break;
+        }
     }
 }
