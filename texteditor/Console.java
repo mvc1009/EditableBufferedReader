@@ -26,12 +26,11 @@ public class Console implements Observer{
     private static final String PASTE_POS = "\033[u";
     private static final String WHERE_IS_MY_CURSOR = "\033[6n";
     private static final String CLEAR_TO_FINAL = "\033[K";
-    private boolean insertMode;
     private Line line;
 
-    public static enum Opcode{ cADD, cCHANGE, cHOME,cEND,cDEL,cBACKSPACE,cRIGHT,cLEFT}
+    public static enum Opcode{ cADD, cHOME,cEND,cDEL,cBACKSPACE,cRIGHT,cLEFT}
 
-    public class Command{
+    public static class Command{
         Opcode code;
         String corteString;
         int caract;
@@ -58,22 +57,17 @@ public class Console implements Observer{
     }
     public Console(Line line){
         this.line = line;
-        insertMode = false;
-        System.out.print(OVERWRITE_MODE);
+        if(this.line.getMode()){
+            System.out.print(INSERT_MODE);
+        }else{
+            System.out.print(OVERWRITE_MODE);
+        }
     }
     public void update(Observable o, Object arg){
         Command comando = (Command) arg;
         switch(comando.code){
             case cADD:
-                System.out.print(comando.caract);
-                break;
-            case cCHANGE:
-                insertMode = !insertMode;
-                if(insertMode){
-                    System.out.print(INSERT_MODE);
-                }else{
-                    System.out.print(OVERWRITE_MODE);
-                }
+                System.out.print((char)comando.caract);
                 break;
             case cHOME:
                 System.out.format(HOME, comando.caract);

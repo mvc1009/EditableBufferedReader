@@ -142,7 +142,7 @@ public class EditableBufferedReader extends BufferedReader {
                         break;
 
                     default:
-                        if(!line.getMode()&&(line.getPuntero()<line.getSize())){
+                        if(!line.getMode()){
                             line.delChar();
                         }
                             line.addChar(line.getPuntero(),key);

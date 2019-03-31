@@ -22,7 +22,7 @@ public class Line extends Observable {
     public Line() {
         buffer = new ArrayList<Character>();
         puntero = 0;
-        insertMode = false;
+        insertMode = true;
     }
 
     public void addChar(int puntero, int caract) {
@@ -75,9 +75,7 @@ public class Line extends Observable {
     }
 
     public void changeMode() {
-        setChanged();
         insertMode = !insertMode;
-        notifyObservers(new Console.Command(Console.Opcode.cCHANGE));
     }
 
     public boolean getMode() {
